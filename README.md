@@ -6,6 +6,12 @@ Umbrella es una aplicacion de busqueda de archivos por medio de palabras claves 
 para ello se implemento un algoritmo de busqueda para la analitica de texto.
 
 #### Requisitos 
+* Ruby 2.4.0
+* Mysql 5.7
+* Rails 5.0
+
+#### Gems especiales
+* mysql2
 
 #### Correr el wordcount.py
 -Se descarga el dataset
