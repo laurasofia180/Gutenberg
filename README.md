@@ -1,24 +1,64 @@
-# README
+Umbrella
+==========
+#### Descripción
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Umbrella es una aplicacion de busqueda de archivos por medio de palabras claves ingresadas en la barra de busqueda,
+para ello se implemento un algoritmo de busqueda para la analitica de texto.
 
-Things you may want to cover:
+#### Requisitos 
 
-* Ruby version
+#### Correr el wordcount.py
+-Se descarga el dataset
+```
+$wget -w 2 -m -H "http://www.gutenberg.org/robot/harvest?filetypes[]=txt&langs[]=es"
+```
 
-* System dependencies
+-Se descomprime
+```
+$find . -name "*.zip" | while read filename; do unzip -o -d "`dirname "$filename"`" "$filename"; done; 
+```
 
-* Configuration
+-Se copian solo los txt en una carpeta
+```
+$find . -type f -print0 | xargs -0 mv -t <Nuevo directorio>
+```
+Ejemplo:
+```
+$find . -type f -print0 | xargs -0 mv -t /home/cmunozf/dataset
+```
 
-* Database creation
+-Se crean las carpetas necesarias en donde se guardaran los archivos hdfs
+```
+$hdfs dfs -mkdir /user/st0263/username/data_in
+$hdfs dfs -mkdir /user/st0263/username/data_out
+```
 
-* Database initialization
+Luego se pasa el dataset a hdfs 
+```
+$hdfs dfs -copyFromLocal <directorio a copiar>/*.txt <directorio final>
+```
+Ejemplo:
+```
+$hdfs dfs -copyFromLocal /home/cmunozf/dataset/*.txt hdfs:/user/cmunozf/data_in/
+```
 
-* How to run the test suite
+-Se ejecuta el wordCount en el dataset que esta en hdfs
+```
+$python <direccion fichero> hdfs:/<direccion donde estan los datos>/*.txt -r hadoop --output-dir hdfs:/<directorio salida de los datos>
+```
+Ejemplo:
+```
+$python umbrella/wordcount.py hdfs:/user/cmunozf/data_in/*.txt -r hadoop --output-dir hdfs:/user/cmunozf/data_out/out6
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+-Esperar que se procesen los datos
 
-* Deployment instructions
 
-* ...
+-Si se quiere copiar archivos del HDFS hacia local
+```
+$hdfs dfs -copyToLocal <directorio a copiar>/*.txt <directorio final>
+```
+Ejemplo
+```
+$hdfs dfs -copyToLocal /user/cmunozf/data_out/out6 /home/cmunozf/output
+```
